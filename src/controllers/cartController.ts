@@ -15,7 +15,9 @@ export const getCart = asyncHandler(async (req: any, res: Response) => {
   cart.items = cart.items.filter((i) => i.product != null)
   let total = 0
   cart.items.forEach((i: any) => {
-    total += (i.product?.price || 0) * i.quantity
+    const unitPrice = i.selectedTier?.unitPrice || i.product?.price || 0
+    const addonsTotal = (i.selectedAddons || []).reduce((s: number, a: any) => s + (a.price || 0), 0)
+    total += (unitPrice + addonsTotal) * i.quantity
   })
   cart.totalAmount = total
   await cart.save()
@@ -24,7 +26,7 @@ export const getCart = asyncHandler(async (req: any, res: Response) => {
 })
 
 export const addToCart = asyncHandler(async (req: any, res: Response, next: NextFunction) => {
-  const { productId, quantity = 1, customText, customImage } = req.body
+  const { productId, quantity = 1, customText, customImage, selectedTier, selectedAddons } = req.body
   const product = await Product.findById(productId)
   if (!product) return next(new ApiError(404, "Product not found"))
 
@@ -34,19 +36,34 @@ export const addToCart = asyncHandler(async (req: any, res: Response, next: Next
   }
 
   const existingIdx = cart.items.findIndex(
-    (i) => i.product.toString() === productId && (i.customText || "") === (customText || "")
+    (i) =>
+      i.product.toString() === productId &&
+      (i.customText || "") === (customText || "") &&
+      (i.selectedTier?.title || "") === (selectedTier?.title || "")
   )
 
   if (existingIdx > -1) {
     cart.items[existingIdx].quantity += Number(quantity)
+    if (selectedAddons) cart.items[existingIdx].selectedAddons = selectedAddons
   } else {
     cart.items.push({
       product: productId,
       quantity: Number(quantity),
+      selectedTier,
+      selectedAddons: Array.isArray(selectedAddons) ? selectedAddons : [],
       customText,
       customImage,
     })
   }
+
+  // Recalculate total amount
+  let total = 0
+  cart.items.forEach((i: any) => {
+    const unitPrice = i.selectedTier?.unitPrice || product.price || 0
+    const addonsTotal = (i.selectedAddons || []).reduce((s: number, a: any) => s + (a.price || 0), 0)
+    total += (unitPrice + addonsTotal) * i.quantity
+  })
+  cart.totalAmount = total
 
   await cart.save()
   cart = await Cart.findById(cart._id).populate("items.product")

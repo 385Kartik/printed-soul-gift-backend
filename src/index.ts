@@ -23,6 +23,7 @@ import userRoutes from "./routes/userRoutes"
 import adminRoutes from "./routes/adminRoutes"
 import bannerRoutes from "./routes/bannerRoutes"
 import uploadRoutes from "./routes/uploadRoutes"
+import addonRoutes from "./routes/addonRoutes"
 
 const app: Express = express()
 const port = process.env.PORT || 5000
@@ -94,6 +95,7 @@ app.use("/api/user", userRoutes)
 app.use("/api/admin", adminRoutes)
 app.use("/api/banners", bannerRoutes)
 app.use("/api/upload", uploadRoutes)
+app.use("/api", addonRoutes)
 
 // ── Global Error Handler ──
 app.use(errorHandler)

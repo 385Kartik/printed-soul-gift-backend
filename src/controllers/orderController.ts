@@ -55,6 +55,8 @@ export const createOrder = asyncHandler(async (req: any, res: Response, next: Ne
         productId: i.product._id,
         quantity: i.quantity,
         productObj: i.product,
+        selectedTier: i.selectedTier,
+        selectedAddons: i.selectedAddons,
         customText: i.customText,
         customImage: i.customImage,
       }))
@@ -73,12 +75,17 @@ export const createOrder = asyncHandler(async (req: any, res: Response, next: Ne
       return next(new ApiError(400, `Insufficient stock for ${product.name}`))
     }
 
+    const unitPrice = raw.selectedTier?.unitPrice || product.price
+    const addonsTotal = (raw.selectedAddons || []).reduce((s: number, a: any) => s + (a.price || 0), 0)
+
     items.push({
       product: product._id,
       name: product.name,
-      price: product.price,
+      price: unitPrice + addonsTotal,
       quantity: raw.quantity,
       image: product.images?.[0] || "",
+      tierTitle: raw.selectedTier?.title || "",
+      selectedAddons: raw.selectedAddons || [],
       customText: raw.customText || "",
       customImage: raw.customImage || "",
     })

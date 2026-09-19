@@ -12,12 +12,22 @@ export type OrderStatus =
 
 export type PaymentStatus = "pending" | "paid" | "failed" | "refunded"
 
+export interface IOrderAddon {
+  addonId?: string
+  title: string
+  variantName: string
+  price: number
+  message?: string
+}
+
 export interface IOrderItem {
   product: mongoose.Types.ObjectId
   name: string
   price: number
   quantity: number
   image?: string
+  tierTitle?: string
+  selectedAddons?: IOrderAddon[]
   customText?: string
   customImage?: string
 }
@@ -63,6 +73,17 @@ export interface IOrder extends Document {
   updatedAt: Date
 }
 
+const OrderAddonSchema = new Schema<IOrderAddon>(
+  {
+    addonId: { type: String },
+    title: { type: String, required: true },
+    variantName: { type: String, required: true },
+    price: { type: Number, required: true },
+    message: { type: String },
+  },
+  { _id: false }
+)
+
 const OrderItemSchema = new Schema<IOrderItem>(
   {
     product: { type: Schema.Types.ObjectId, ref: "Product", required: true },
@@ -70,6 +91,8 @@ const OrderItemSchema = new Schema<IOrderItem>(
     price: { type: Number, required: true },
     quantity: { type: Number, required: true, min: 1 },
     image: { type: String },
+    tierTitle: { type: String },
+    selectedAddons: [OrderAddonSchema],
     customText: { type: String },
     customImage: { type: String },
   },

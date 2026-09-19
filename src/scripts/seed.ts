@@ -8,6 +8,7 @@ import { User } from "../models/User"
 import { Category } from "../models/Category"
 import { Product } from "../models/Product"
 import { Banner } from "../models/Banner"
+import { Addon } from "../models/Addon"
 
 async function seed() {
   await mongoose.connect(process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/printed_soul_gift")
@@ -28,10 +29,11 @@ async function seed() {
     console.log("✅ Admin user created: admin@printedsoulgift.com / Admin@Password123")
   }
 
-  // 2. Clear old categories & products if seeding fresh
+  // 2. Clear old categories, products, addons & banners if seeding fresh
   await Category.deleteMany({})
   await Product.deleteMany({})
   await Banner.deleteMany({})
+  await Addon.deleteMany({})
 
   // 3. Seed Giftana-style Categories
   const categoriesData = [
@@ -588,8 +590,41 @@ async function seed() {
     },
   ]
 
-  const insertedProducts = await Product.insertMany(productsData)
-  console.log(`✅ Seeded ${insertedProducts.length} gift products`)
+  const productsWithTiers = productsData.map((p) => ({
+    ...p,
+    bulkPricingTiers: [
+      {
+        title: "Buy 1 Gift",
+        subtitle: "Standard price",
+        minQty: 1,
+        maxQty: 1,
+        discountPercent: 0,
+        unitPrice: p.price,
+      },
+      {
+        title: "Buy 2 - 20 Gifts",
+        subtitle: "Best option",
+        minQty: 2,
+        maxQty: 20,
+        discountPercent: 45,
+        unitPrice: Math.round(p.price * 0.55),
+        badgeText: "Save 45%",
+      },
+      {
+        title: "More than 21 Gifts",
+        subtitle: "Save more",
+        minQty: 21,
+        maxQty: 9999,
+        discountPercent: 48,
+        unitPrice: Math.round(p.price * 0.52),
+        badgeText: "Save 48%",
+        isMostPopular: true,
+      },
+    ],
+  }))
+
+  const insertedProducts = await Product.insertMany(productsWithTiers)
+  console.log(`✅ Seeded ${insertedProducts.length} gift products with bulk pricing tiers`)
 
   // 5. Seed Banners
   const bannersData = [
@@ -617,6 +652,73 @@ async function seed() {
 
   await Banner.insertMany(bannersData)
   console.log("✅ Seeded initial hero banners")
+
+  // 6. Seed Make It Extra Special Addons
+  const addonsData = [
+    {
+      title: "Chocolates",
+      type: "chocolate",
+      image: "https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=400&auto=format&fit=crop&q=80",
+      variants: [
+        { name: "Loyka Almond Brittle Brownie", price: 40, isDefault: true },
+        { name: "Ferrero Rocher 4 pcs", price: 120 },
+        { name: "Cadbury Silk", price: 80 },
+        { name: "Galaxy Chocolate", price: 60 },
+        { name: "Hershey's Kisses", price: 70 },
+      ],
+      requiresMessage: false,
+      appliesTo: "all",
+      isActive: true,
+      sortOrder: 1,
+    },
+    {
+      title: "Gift Wrap",
+      type: "wrap",
+      image: "https://images.unsplash.com/photo-1513297887119-d46091b24bfa?w=400&auto=format&fit=crop&q=80",
+      variants: [
+        { name: "Silver Gift Wrap", price: 50, isDefault: true },
+        { name: "Blue Gift Wrap", price: 50 },
+        { name: "Red Gift Wrap", price: 50 },
+        { name: "Heart Wrapping Paper Red", price: 50 },
+        { name: "Red Wrapping Paper Plain", price: 50 },
+        { name: "Heart Wrapping Paper Peach", price: 50 },
+        { name: "Peach Wrapping Paper Plain", price: 50 },
+      ],
+      requiresMessage: false,
+      appliesTo: "all",
+      isActive: true,
+      sortOrder: 2,
+    },
+    {
+      title: "Greeting Card",
+      type: "card",
+      image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=400&auto=format&fit=crop&q=80",
+      variants: [
+        { name: "Happy Birthday Card", price: 25, isDefault: true },
+        { name: "I Love You Card", price: 25 },
+        { name: "Thank You Card", price: 25 },
+        { name: "Happy Anniversary Card", price: 25 },
+        { name: "All The Best Card", price: 25 },
+        { name: "Better Together Card", price: 25 },
+        { name: "Happy Father's Day Card", price: 25 },
+        { name: "Congrats Card", price: 25 },
+        { name: "Get Well Soon Card", price: 25 },
+        { name: "I Love You So Much Card", price: 25 },
+        { name: "Miss You Card", price: 25 },
+        { name: "Sending You Love Card", price: 25 },
+        { name: "You Make Me Perfect", price: 25 },
+        { name: "You And Me Forever Card", price: 25 },
+      ],
+      requiresMessage: true,
+      messagePlaceholder: "Write A Message On Greeting Card",
+      appliesTo: "all",
+      isActive: true,
+      sortOrder: 3,
+    },
+  ]
+
+  await Addon.insertMany(addonsData)
+  console.log("✅ Seeded Giftana-style Make It Special Addons (Chocolates, Wraps, Cards)")
 
   console.log("🎉 Seeding completed successfully!")
   process.exit(0)
