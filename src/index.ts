@@ -69,8 +69,8 @@ app.use("/api/auth/login", authLimiter)
 app.use("/api/auth/signup", authLimiter)
 
 // ── Body Parsers ──
-app.use(express.json({ limit: "20mb" }))
-app.use(express.urlencoded({ extended: true, limit: "20mb" }))
+app.use(express.json({ limit: "60mb" }))
+app.use(express.urlencoded({ extended: true, limit: "60mb" }))
 app.use(cookieParser())
 
 // ── Logging ──

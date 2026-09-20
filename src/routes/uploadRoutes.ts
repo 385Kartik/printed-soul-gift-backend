@@ -25,25 +25,46 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 15 * 1024 * 1024 }, // 15MB
+  limits: { fileSize: 60 * 1024 * 1024 }, // 60MB
   fileFilter: (req, file, cb) => {
-    const filetypes = /jpeg|jpg|png|webp|svg|pdf/
-    const mimetype = filetypes.test(file.mimetype)
+    const filetypes = /jpeg|jpg|png|webp|svg|gif|pdf|mp4|webm|mov|quicktime/
+    const mimetype =
+      /image\/(jpeg|jpg|png|webp|svg\+xml|gif)|application\/pdf|video\/(mp4|webm|quicktime)/.test(
+        file.mimetype
+      )
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase())
-    if (mimetype && extname) {
+    if (mimetype || extname) {
       return cb(null, true)
     }
-    cb(new Error("Only image and PDF files are allowed"))
+    cb(new Error("Only image, video (MP4/WebM), and PDF files are allowed"))
   },
 })
 
-router.post("/", upload.single("image"), (req: Request, res: Response, next: NextFunction) => {
-  if (!req.file) {
-    return next(new ApiError(400, "Please upload a file"))
-  }
+router.post("/", (req: Request, res: Response, next: NextFunction) => {
+  upload.single("image")(req, res, (err: any) => {
+    if (err instanceof multer.MulterError) {
+      if (err.code === "LIMIT_FILE_SIZE") {
+        return next(new ApiError(400, "File is too large. Maximum allowed size is 60MB."))
+      }
+      return next(new ApiError(400, `Upload error: ${err.message}`))
+    } else if (err) {
+      return next(new ApiError(400, err.message || "File upload failed"))
+    }
 
-  const fileUrl = `/uploads/${req.file.filename}`
-  res.status(201).json(ApiResponse.success({ url: fileUrl, filename: req.file.filename }, "File uploaded successfully"))
+    if (!req.file) {
+      return next(new ApiError(400, "Please upload a file"))
+    }
+
+    const fileUrl = `/uploads/${req.file.filename}`
+    res
+      .status(201)
+      .json(
+        ApiResponse.success(
+          { url: fileUrl, filename: req.file.filename, size: req.file.size },
+          "File uploaded successfully"
+        )
+      )
+  })
 })
 
 export default router

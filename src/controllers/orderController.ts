@@ -92,8 +92,8 @@ export const createOrder = asyncHandler(async (req: any, res: Response, next: Ne
   }
 
   const itemsTotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0)
-  // Free shipping above ₹500
-  const shippingCharge = itemsTotal >= 500 ? 0 : 50
+  // Free Express Delhivery Pan-India on all orders
+  const shippingCharge = 0
   const totalAmount = itemsTotal + shippingCharge
 
   // Shipping Address Resolution
