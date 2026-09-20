@@ -144,6 +144,10 @@ export const adminCreateProduct = asyncHandler(async (req: Request, res: Respons
     giftOccasions,
     recipient,
     tags,
+    bulkPricingTiers,
+    personalizationZones,
+    customAddonsEnabled,
+    applicableAddons,
   } = req.body
 
   if (!name || !price || !category || !images || images.length === 0) {
@@ -168,6 +172,10 @@ export const adminCreateProduct = asyncHandler(async (req: Request, res: Respons
     isPersonalizable: !!isPersonalizable,
     personalizationPrompt: personalizationPrompt || "Enter Name or Custom Text",
     allowCustomImageUpload: !!allowCustomImageUpload,
+    personalizationZones: Array.isArray(personalizationZones) ? personalizationZones : [],
+    bulkPricingTiers: Array.isArray(bulkPricingTiers) ? bulkPricingTiers : [],
+    customAddonsEnabled: !!customAddonsEnabled,
+    applicableAddons: Array.isArray(applicableAddons) ? applicableAddons : [],
     giftOccasions: Array.isArray(giftOccasions) ? giftOccasions : [],
     recipient: Array.isArray(recipient) ? recipient : [],
     tags: Array.isArray(tags) ? tags : [],

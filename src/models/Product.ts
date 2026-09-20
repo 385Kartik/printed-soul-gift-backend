@@ -11,6 +11,22 @@ export interface IBulkPricingTier {
   isMostPopular?: boolean
 }
 
+export interface IPersonalizationZone {
+  id?: string
+  name: string
+  x: number // 0 - 100 percentage
+  y: number // 0 - 100 percentage
+  fontSize?: number // in px
+  textColor?: string // hex or rgba
+  rotation?: number // in degrees
+  isCurved?: boolean
+  curveRadius?: number // curvature -100 to 100
+  hasBackground?: boolean
+  backgroundColor?: string
+  maxChars?: number
+  sampleText?: string
+}
+
 export interface IProduct extends Document {
   name: string
   slug: string
@@ -25,6 +41,7 @@ export interface IProduct extends Document {
   isPersonalizable: boolean
   personalizationPrompt?: string
   allowCustomImageUpload: boolean
+  personalizationZones?: IPersonalizationZone[]
   giftOccasions: string[]
   recipient: string[]
   tags: string[]
@@ -52,6 +69,25 @@ const BulkPricingTierSchema = new Schema<IBulkPricingTier>(
   { _id: false }
 )
 
+const PersonalizationZoneSchema = new Schema<IPersonalizationZone>(
+  {
+    id: { type: String },
+    name: { type: String, required: true },
+    x: { type: Number, required: true, default: 50 },
+    y: { type: Number, required: true, default: 50 },
+    fontSize: { type: Number, default: 18 },
+    textColor: { type: String, default: "#ffffff" },
+    rotation: { type: Number, default: 0 },
+    isCurved: { type: Boolean, default: false },
+    curveRadius: { type: Number, default: 30 },
+    hasBackground: { type: Boolean, default: false },
+    backgroundColor: { type: String, default: "rgba(0,0,0,0.4)" },
+    maxChars: { type: Number, default: 16 },
+    sampleText: { type: String },
+  },
+  { _id: false }
+)
+
 const ProductSchema = new Schema<IProduct>(
   {
     name: { type: String, required: true, trim: true },
@@ -67,6 +103,7 @@ const ProductSchema = new Schema<IProduct>(
     isPersonalizable: { type: Boolean, default: false },
     personalizationPrompt: { type: String, default: "Enter Name or Custom Text" },
     allowCustomImageUpload: { type: Boolean, default: false },
+    personalizationZones: [PersonalizationZoneSchema],
     giftOccasions: [{ type: String }],
     recipient: [{ type: String }],
     tags: [{ type: String }],
