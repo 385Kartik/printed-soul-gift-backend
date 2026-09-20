@@ -52,6 +52,8 @@ export interface IProduct extends Document {
   bulkPricingTiers?: IBulkPricingTier[]
   customAddonsEnabled?: boolean
   applicableAddons?: mongoose.Types.ObjectId[]
+  hoverMediaType?: "image" | "video" | "none"
+  hoverMediaUrl?: string
   isActive: boolean
 }
 
@@ -114,6 +116,8 @@ const ProductSchema = new Schema<IProduct>(
     bulkPricingTiers: [BulkPricingTierSchema],
     customAddonsEnabled: { type: Boolean, default: false },
     applicableAddons: [{ type: Schema.Types.ObjectId, ref: "Addon" }],
+    hoverMediaType: { type: String, enum: ["image", "video", "none"], default: "image" },
+    hoverMediaUrl: { type: String },
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true }

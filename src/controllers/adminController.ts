@@ -148,6 +148,8 @@ export const adminCreateProduct = asyncHandler(async (req: Request, res: Respons
     personalizationZones,
     customAddonsEnabled,
     applicableAddons,
+    hoverMediaType,
+    hoverMediaUrl,
   } = req.body
 
   if (!name || !price || !category || !images || images.length === 0) {
@@ -176,6 +178,8 @@ export const adminCreateProduct = asyncHandler(async (req: Request, res: Respons
     bulkPricingTiers: Array.isArray(bulkPricingTiers) ? bulkPricingTiers : [],
     customAddonsEnabled: !!customAddonsEnabled,
     applicableAddons: Array.isArray(applicableAddons) ? applicableAddons : [],
+    hoverMediaType: hoverMediaType || "image",
+    hoverMediaUrl: hoverMediaUrl || undefined,
     giftOccasions: Array.isArray(giftOccasions) ? giftOccasions : [],
     recipient: Array.isArray(recipient) ? recipient : [],
     tags: Array.isArray(tags) ? tags : [],
