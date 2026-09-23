@@ -84,7 +84,7 @@ export const createOrder = asyncHandler(async (req: any, res: Response, next: Ne
       price: unitPrice + addonsTotal,
       quantity: raw.quantity,
       image: product.images?.[0] || "",
-      tierTitle: raw.selectedTier?.title || "",
+      tierTitle: raw.selectedTier?.tierTitle || raw.selectedTier?.title || "",
       selectedAddons: raw.selectedAddons || [],
       customText: raw.customText || "",
       customImage: raw.customImage || "",
@@ -152,7 +152,8 @@ export const createOrder = asyncHandler(async (req: any, res: Response, next: Ne
     await Cart.findOneAndUpdate({ user: userId }, { $set: { items: [], totalAmount: 0 } }).catch(() => {})
   }
 
-  const apiOrigin = process.env.API_URL || "http://localhost:5000"
+  const rawApiUrl = (process.env.API_URL || "https://printedsoulgift.in").replace(/\/+$/, "")
+  const baseDomain = rawApiUrl.replace(/\/api$/, "")
   const uniqueTxnId = `${order.orderNumber}_${Date.now()}`
 
   const payuParams = {
@@ -162,8 +163,8 @@ export const createOrder = asyncHandler(async (req: any, res: Response, next: Ne
     firstname: finalAddress.fullName.split(" ")[0] || "Customer",
     email: userEmail,
     phone: finalAddress.phone,
-    surl: `${apiOrigin}/api/orders/payu/callback`,
-    furl: `${apiOrigin}/api/orders/payu/callback`,
+    surl: `${baseDomain}/api/orders/payu/callback`,
+    furl: `${baseDomain}/api/orders/payu/callback`,
   }
 
   const payuData = payuService.generatePaymentHash(payuParams)
@@ -207,7 +208,7 @@ export const handlePayuCallback = asyncHandler(async (req: Request, res: Respons
   const clientOrigin = process.env.CLIENT_URL || "http://localhost:5173"
 
   if (!order) {
-    return res.redirect(`${clientOrigin}/track?error=OrderNotFound`)
+    return res.redirect(`${clientOrigin}/payment-status?status=failed&reason=OrderNotFound`)
   }
 
   if (status === "success" && (isValidHash || process.env.PAYU_ENV === "sandbox" || !process.env.PAYU_MERCHANT_SALT)) {
@@ -254,17 +255,22 @@ export const handlePayuCallback = asyncHandler(async (req: Request, res: Respons
       emailService.sendOrderConfirmation(customerEmail, customerName, order).catch(() => {})
     }
 
-    return res.redirect(`${clientOrigin}/order-success/${order.orderNumber}`)
+    return res.redirect(
+      `${clientOrigin}/payment-status?status=success&order=${order.orderNumber}&amount=${order.totalAmount}`
+    )
   } else {
     order.paymentStatus = "failed"
+    const failReason = payload.error_Message || payload.unmappedstatus || "PayU Payment failed or was cancelled"
     order.statusHistory.push({
       status: "pending",
       timestamp: new Date(),
-      note: "PayU Payment failed or was cancelled",
+      note: failReason,
     })
     await order.save()
 
-    return res.redirect(`${clientOrigin}/track?query=${order.orderNumber}&payment=failed`)
+    return res.redirect(
+      `${clientOrigin}/payment-status?status=failed&order=${order.orderNumber}&reason=${encodeURIComponent(failReason)}`
+    )
   }
 })
 

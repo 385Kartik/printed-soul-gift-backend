@@ -12,8 +12,10 @@ export interface ICartItem {
   product: mongoose.Types.ObjectId
   quantity: number
   selectedTier?: {
-    title: string
+    title?: string
+    tierTitle?: string
     unitPrice: number
+    discountPercent?: number
   }
   selectedAddons?: ISelectedAddon[]
   customText?: string
@@ -43,7 +45,9 @@ const CartItemSchema = new Schema<ICartItem>(
     quantity: { type: Number, required: true, default: 1, min: 1 },
     selectedTier: {
       title: { type: String },
+      tierTitle: { type: String },
       unitPrice: { type: Number },
+      discountPercent: { type: Number },
     },
     selectedAddons: [SelectedAddonSchema],
     customText: { type: String },

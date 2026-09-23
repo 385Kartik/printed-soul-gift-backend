@@ -64,7 +64,7 @@ export function buildInvoiceDocument(order: InvoiceOrder): PDFKit.PDFDocument {
   // ── HEADER ──
   doc.fontSize(22).font("Helvetica-Bold").fillColor("#111827").text("PRINTED SOUL GIFT", margin, 40)
   doc.fontSize(9).font("Helvetica").fillColor("#6B7280").text("Personalized Gifts, Hampers & Corporate Kits", margin, 66)
-  doc.fontSize(8).fillColor("#9CA3AF").text("Website: www.printedsoulgift.com  |  Support: support@printedsoulgift.com", margin, 78)
+  doc.fontSize(8).fillColor("#9CA3AF").text("Website: www.printedsoulgift.in  |  Email: printedsoul3313@gmail.com", margin, 78)
 
   // Invoice Title on Right
   doc.fontSize(16).font("Helvetica-Bold").fillColor("#111827").text("TAX INVOICE", margin, 40, { align: "right", width: contentWidth })
@@ -181,7 +181,7 @@ export function buildInvoiceDocument(order: InvoiceOrder): PDFKit.PDFDocument {
   currentY += 12
   doc.font("Helvetica").fillColor("#6B7280").text(
     "1. All custom personalized gift items are created with precision craftsmanship.\n" +
-    "2. For any query or defect, please contact support@printedsoulgift.com within 48 hours of delivery.\n" +
+    "2. For any query or defect, please contact printedsoul3313@gmail.com within 48 hours of delivery.\n" +
     "3. This is a computer-generated tax invoice and requires no physical signature.",
     margin,
     currentY,

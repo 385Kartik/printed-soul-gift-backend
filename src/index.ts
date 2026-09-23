@@ -26,6 +26,7 @@ import uploadRoutes from "./routes/uploadRoutes"
 import addonRoutes from "./routes/addonRoutes"
 
 const app: Express = express()
+app.set("trust proxy", 1)
 const port = process.env.PORT || 5000
 
 // Connect to MongoDB
@@ -48,7 +49,7 @@ app.use(
     const origin = req.headers.origin as string
 
     // Allow PayU callback redirect (may send null origin from browser submit)
-    if (req.path === "/api/orders/payu/callback") {
+    if (req.path === "/api/orders/payu/callback" || req.path === "/api/api/orders/payu/callback") {
       return callback(null, { origin: true, credentials: true })
     }
 
@@ -90,6 +91,7 @@ app.get("/api/health", (req: Request, res: Response) => {
 app.use("/api/auth", authRoutes)
 app.use("/api/catalog", catalogRoutes)
 app.use("/api/orders", orderRoutes)
+app.use("/api/api/orders", orderRoutes) // Fallback for PayU callback in case of double /api
 app.use("/api/cart", cartRoutes)
 app.use("/api/user", userRoutes)
 app.use("/api/admin", adminRoutes)

@@ -20,7 +20,7 @@ const sendEmail = async (to: string, subject: string, html: string, attachments?
 
   try {
     await transporter.sendMail({
-      from: process.env.SMTP_FROM_EMAIL || "Printed Soul Gift <orders@printedsoulgift.com>",
+      from: process.env.SMTP_FROM_EMAIL || "Printed Soul Gift <printedsoul3313@gmail.com>",
       to,
       subject,
       html,
@@ -63,8 +63,9 @@ const baseTemplate = (content: string) => `
     </div>
     <div class="body">${content}</div>
     <div class="footer">
-      <p>© ${new Date().getFullYear()} Printed Soul Gift. Handcrafted with precision & love.</p>
-      <p>Have questions? Reply to this email or chat with us on WhatsApp.</p>
+      <p>© ${new Date().getFullYear()} Printed Soul Gift. Handcrafted with precision &amp; love.</p>
+      <!-- WhatsApp support commented out temporarily until new number is provided -->
+      <p>Have questions? Reach us at <a href="mailto:printedsoul3313@gmail.com" style="color:#e11d48;text-decoration:none;">printedsoul3313@gmail.com</a>.</p>
     </div>
   </div>
 </body>

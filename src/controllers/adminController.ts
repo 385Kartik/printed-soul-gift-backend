@@ -48,12 +48,12 @@ export const getDashboardStats = asyncHandler(async (req: Request, res: Response
 
 // ── Category CRUD (Dynamic Navbar & Homepage Controls) ──
 export const adminGetCategories = asyncHandler(async (req: Request, res: Response) => {
-  const categories = await Category.find().sort("sortOrder")
+  const categories = await Category.find().populate("parentCategory", "name slug").sort("sortOrder")
   res.json(ApiResponse.success(categories, "Categories retrieved"))
 })
 
 export const adminCreateCategory = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  const { name, slug, description, image, showOnNavbar, navDisplayName, showOnHome, homeOrder, sortOrder } = req.body
+  const { name, slug, description, image, showOnNavbar, navDisplayName, showOnHome, homeOrder, sortOrder, parentCategory } = req.body
   if (!name) return next(new ApiError(400, "Category name is required"))
 
   const categorySlug = slug
@@ -73,6 +73,7 @@ export const adminCreateCategory = asyncHandler(async (req: Request, res: Respon
     showOnHome: showOnHome !== undefined ? !!showOnHome : true,
     homeOrder: Number(homeOrder || 0),
     sortOrder: Number(sortOrder || 0),
+    parentCategory: parentCategory && parentCategory.trim() ? parentCategory : null,
     isActive: true,
   })
 
@@ -92,6 +93,12 @@ export const adminUpdateCategory = asyncHandler(async (req: Request, res: Respon
   if (req.body.showOnHome !== undefined) category.showOnHome = !!req.body.showOnHome
   if (req.body.homeOrder !== undefined) category.homeOrder = Number(req.body.homeOrder)
   if (req.body.sortOrder !== undefined) category.sortOrder = Number(req.body.sortOrder)
+  if (req.body.parentCategory !== undefined) {
+    if (req.body.parentCategory && req.body.parentCategory.toString() === category._id.toString()) {
+      return next(new ApiError(400, "Category cannot be its own parent"))
+    }
+    category.parentCategory = req.body.parentCategory && req.body.parentCategory.trim() ? req.body.parentCategory : null
+  }
   if (req.body.isActive !== undefined) category.isActive = !!req.body.isActive
 
   await category.save()
@@ -101,15 +108,20 @@ export const adminUpdateCategory = asyncHandler(async (req: Request, res: Respon
 export const adminDeleteCategory = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   const category = await Category.findByIdAndDelete(req.params.id)
   if (!category) return next(new ApiError(404, "Category not found"))
+  
+  // Unset parentCategory for subcategories of deleted category
+  await Category.updateMany({ parentCategory: req.params.id }, { $set: { parentCategory: null } })
+
   res.json(ApiResponse.success(null, "Category deleted successfully"))
 })
 
 // ── Product CRUD (With Gift Personalization Options) ──
 export const adminGetProducts = asyncHandler(async (req: Request, res: Response) => {
-  const { search, category, page = 1, limit = 50 } = req.query
+  const { search, category, subCategory, page = 1, limit = 50 } = req.query
   const filter: any = {}
 
   if (category) filter.category = category
+  if (subCategory) filter.subCategory = subCategory
   if (search) {
     filter.name = new RegExp(String(search).trim(), "i")
   }
@@ -119,7 +131,12 @@ export const adminGetProducts = asyncHandler(async (req: Request, res: Response)
   const skip = (p - 1) * l
 
   const [products, total] = await Promise.all([
-    Product.find(filter).populate("category", "name slug").sort("-createdAt").skip(skip).limit(l),
+    Product.find(filter)
+      .populate("category", "name slug")
+      .populate("subCategory", "name slug")
+      .sort("-createdAt")
+      .skip(skip)
+      .limit(l),
     Product.countDocuments(filter),
   ])
 
@@ -135,6 +152,7 @@ export const adminCreateProduct = asyncHandler(async (req: Request, res: Respons
     comparePrice,
     images,
     category,
+    subCategory,
     stock,
     isFeatured,
     isBestSeller,
@@ -168,6 +186,7 @@ export const adminCreateProduct = asyncHandler(async (req: Request, res: Respons
     comparePrice: comparePrice ? Number(comparePrice) : undefined,
     images,
     category,
+    subCategory: subCategory && subCategory.trim() ? subCategory : undefined,
     stock: stock ? Number(stock) : 100,
     isFeatured: !!isFeatured,
     isBestSeller: !!isBestSeller,
@@ -183,6 +202,9 @@ export const adminCreateProduct = asyncHandler(async (req: Request, res: Respons
     giftOccasions: Array.isArray(giftOccasions) ? giftOccasions : [],
     recipient: Array.isArray(recipient) ? recipient : [],
     tags: Array.isArray(tags) ? tags : [],
+    inclusions: Array.isArray(req.body.inclusions) ? req.body.inclusions : [],
+    specifications: Array.isArray(req.body.specifications) ? req.body.specifications : [],
+    allowAddons: req.body.allowAddons !== false,
   })
 
   res.status(201).json(ApiResponse.success(product, "Product created successfully"))

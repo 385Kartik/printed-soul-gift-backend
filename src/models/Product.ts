@@ -18,7 +18,12 @@ export interface IPersonalizationZone {
   y: number // 0 - 100 percentage
   fontSize?: number // in px
   textColor?: string // hex or rgba
+  fontFamily?: string // font family id e.g. sans, serif, signature, etc.
   rotation?: number // in degrees
+  rotateX?: number // 3D surface tilt X in degrees (-80 to 80)
+  rotateY?: number // 3D surface tilt Y in degrees (-80 to 80)
+  skewX?: number // 2D surface shear X in degrees (-60 to 60)
+  skewY?: number // 2D surface shear Y in degrees (-60 to 60)
   isCurved?: boolean
   curveRadius?: number // curvature -100 to 100
   hasBackground?: boolean
@@ -35,6 +40,7 @@ export interface IProduct extends Document {
   comparePrice?: number
   images: string[]
   category: mongoose.Types.ObjectId
+  subCategory?: mongoose.Types.ObjectId
   stock: number
   isFeatured: boolean
   isBestSeller: boolean
@@ -54,6 +60,9 @@ export interface IProduct extends Document {
   applicableAddons?: mongoose.Types.ObjectId[]
   hoverMediaType?: "image" | "video" | "none"
   hoverMediaUrl?: string
+  inclusions?: string[]
+  specifications?: { label: string; value: string }[]
+  allowAddons?: boolean
   isActive: boolean
 }
 
@@ -79,7 +88,12 @@ const PersonalizationZoneSchema = new Schema<IPersonalizationZone>(
     y: { type: Number, required: true, default: 50 },
     fontSize: { type: Number, default: 18 },
     textColor: { type: String, default: "#ffffff" },
+    fontFamily: { type: String, default: "sans" },
     rotation: { type: Number, default: 0 },
+    rotateX: { type: Number, default: 0 },
+    rotateY: { type: Number, default: 0 },
+    skewX: { type: Number, default: 0 },
+    skewY: { type: Number, default: 0 },
     isCurved: { type: Boolean, default: false },
     curveRadius: { type: Number, default: 30 },
     hasBackground: { type: Boolean, default: false },
@@ -99,6 +113,7 @@ const ProductSchema = new Schema<IProduct>(
     comparePrice: { type: Number, min: 0 },
     images: [{ type: String, required: true }],
     category: { type: Schema.Types.ObjectId, ref: "Category", required: true },
+    subCategory: { type: Schema.Types.ObjectId, ref: "Category", default: null },
     stock: { type: Number, required: true, default: 100, min: 0 },
     isFeatured: { type: Boolean, default: false },
     isBestSeller: { type: Boolean, default: false },
@@ -118,6 +133,14 @@ const ProductSchema = new Schema<IProduct>(
     applicableAddons: [{ type: Schema.Types.ObjectId, ref: "Addon" }],
     hoverMediaType: { type: String, enum: ["image", "video", "none"], default: "image" },
     hoverMediaUrl: { type: String },
+    inclusions: [{ type: String }],
+    specifications: [
+      {
+        label: { type: String },
+        value: { type: String },
+      }
+    ],
+    allowAddons: { type: Boolean, default: true },
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true }

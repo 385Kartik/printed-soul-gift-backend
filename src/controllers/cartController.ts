@@ -35,38 +35,51 @@ export const addToCart = asyncHandler(async (req: any, res: Response, next: Next
     cart = new Cart({ user: req.user.id, items: [], totalAmount: 0 })
   }
 
+  const targetTierTitle = selectedTier?.tierTitle || selectedTier?.title || ""
+
   const existingIdx = cart.items.findIndex(
     (i) =>
       i.product.toString() === productId &&
       (i.customText || "") === (customText || "") &&
-      (i.selectedTier?.title || "") === (selectedTier?.title || "")
+      (i.selectedTier?.tierTitle || i.selectedTier?.title || "") === targetTierTitle
   )
+
+  const normalizedTier = selectedTier
+    ? {
+        title: selectedTier.title || selectedTier.tierTitle || "",
+        tierTitle: selectedTier.tierTitle || selectedTier.title || "",
+        unitPrice: Number(selectedTier.unitPrice) || product.price,
+        discountPercent: Number(selectedTier.discountPercent) || 0,
+      }
+    : undefined
 
   if (existingIdx > -1) {
     cart.items[existingIdx].quantity += Number(quantity)
     if (selectedAddons) cart.items[existingIdx].selectedAddons = selectedAddons
+    if (normalizedTier) cart.items[existingIdx].selectedTier = normalizedTier
   } else {
     cart.items.push({
       product: productId,
       quantity: Number(quantity),
-      selectedTier,
+      selectedTier: normalizedTier,
       selectedAddons: Array.isArray(selectedAddons) ? selectedAddons : [],
       customText,
       customImage,
     })
   }
 
-  // Recalculate total amount
+  await cart.save()
+  await cart.populate("items.product")
+
+  // Recalculate total amount with populated products
   let total = 0
   cart.items.forEach((i: any) => {
-    const unitPrice = i.selectedTier?.unitPrice || product.price || 0
+    const unitPrice = i.selectedTier?.unitPrice || i.product?.price || 0
     const addonsTotal = (i.selectedAddons || []).reduce((s: number, a: any) => s + (a.price || 0), 0)
     total += (unitPrice + addonsTotal) * i.quantity
   })
   cart.totalAmount = total
-
   await cart.save()
-  cart = await Cart.findById(cart._id).populate("items.product")
 
   res.json(ApiResponse.success(cart, "Item added to cart"))
 })

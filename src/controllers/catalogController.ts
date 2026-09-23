@@ -7,17 +7,41 @@ import { asyncHandler } from "../api/asyncHandler"
 
 // ── Categories for Dynamic Navbar ──
 export const getNavbarCategories = asyncHandler(async (req: Request, res: Response) => {
-  const categories = await Category.find({ isActive: true, showOnNavbar: true })
+  // Top-level categories shown on navbar
+  const topCategories = await Category.find({
+    isActive: true,
+    showOnNavbar: true,
+    $or: [{ parentCategory: null }, { parentCategory: { $exists: false } }],
+  })
     .sort("sortOrder")
     .select("name slug navDisplayName image")
 
-  const formatted = categories.map((c) => ({
-    _id: c._id,
-    name: c.name,
-    displayName: c.navDisplayName && c.navDisplayName.trim().length > 0 ? c.navDisplayName : c.name,
-    slug: c.slug,
-    image: c.image,
-  }))
+  // Fetch subcategories for each top category
+  const formatted = await Promise.all(
+    topCategories.map(async (c) => {
+      const subs = await Category.find({
+        parentCategory: c._id,
+        isActive: true,
+      })
+        .sort("sortOrder")
+        .select("name slug navDisplayName image")
+
+      return {
+        _id: c._id,
+        name: c.name,
+        displayName: c.navDisplayName && c.navDisplayName.trim().length > 0 ? c.navDisplayName : c.name,
+        slug: c.slug,
+        image: c.image,
+        subCategories: subs.map((sub) => ({
+          _id: sub._id,
+          name: sub.name,
+          displayName: sub.navDisplayName && sub.navDisplayName.trim().length > 0 ? sub.navDisplayName : sub.name,
+          slug: sub.slug,
+          image: sub.image,
+        })),
+      }
+    })
+  )
 
   res.json(ApiResponse.success(formatted, "Navbar categories retrieved"))
 })
@@ -26,19 +50,24 @@ export const getNavbarCategories = asyncHandler(async (req: Request, res: Respon
 export const getHomeCategories = asyncHandler(async (req: Request, res: Response) => {
   const categories = await Category.find({ isActive: true, showOnHome: true })
     .sort("homeOrder")
-    .select("name slug image description")
+    .select("name slug image description parentCategory")
 
   res.json(ApiResponse.success(categories, "Home categories retrieved"))
 })
 
 // ── All Categories ──
 export const getCategories = asyncHandler(async (req: Request, res: Response) => {
-  const categories = await Category.find({ isActive: true }).sort("sortOrder")
+  const categories = await Category.find({ isActive: true })
+    .populate("parentCategory", "name slug")
+    .sort("sortOrder")
   res.json(ApiResponse.success(categories, "Categories retrieved"))
 })
 
 export const getCategoryBySlug = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  const category = await Category.findOne({ slug: req.params.slug, isActive: true })
+  const category = await Category.findOne({ slug: req.params.slug, isActive: true }).populate(
+    "parentCategory",
+    "name slug"
+  )
   if (!category) return next(new ApiError(404, "Category not found"))
   res.json(ApiResponse.success(category, "Category retrieved"))
 })
@@ -47,6 +76,7 @@ export const getCategoryBySlug = asyncHandler(async (req: Request, res: Response
 export const getProducts = asyncHandler(async (req: Request, res: Response) => {
   const {
     category,
+    subCategory,
     search,
     minPrice,
     maxPrice,
@@ -60,22 +90,46 @@ export const getProducts = asyncHandler(async (req: Request, res: Response) => {
 
   const query: any = { isActive: true }
 
-  // Category filter by ID or slug
-  if (category) {
+  // Explicit subcategory filter
+  if (subCategory) {
+    const subCat = await Category.findOne({
+      $or: [{ slug: subCategory }, { _id: subCategory.toString().match(/^[0-9a-fA-F]{24}$/) ? subCategory : null }],
+    })
+    if (subCat) {
+      query.subCategory = subCat._id
+    }
+  } else if (category) {
+    // Category filter by ID or slug (include parent category and all its child subcategories)
     const cat = await Category.findOne({
       $or: [{ slug: category }, { _id: category.toString().match(/^[0-9a-fA-F]{24}$/) ? category : null }],
     })
-    if (cat) query.category = cat._id
+    if (cat) {
+      const childCategories = await Category.find({ parentCategory: cat._id }).select("_id")
+      const childIds = childCategories.map((c) => c._id)
+      query.$or = [
+        { category: cat._id },
+        { subCategory: cat._id },
+        ...(childIds.length > 0
+          ? [{ category: { $in: childIds } }, { subCategory: { $in: childIds } }]
+          : []),
+      ]
+    }
   }
 
   // Search filter
   if (search && typeof search === "string" && search.trim()) {
     const q = search.trim()
-    query.$or = [
+    const searchOr = [
       { name: new RegExp(q, "i") },
       { description: new RegExp(q, "i") },
       { tags: new RegExp(q, "i") },
     ]
+    if (query.$or) {
+      query.$and = [{ $or: query.$or }, { $or: searchOr }]
+      delete query.$or
+    } else {
+      query.$or = searchOr
+    }
   }
 
   // Price range
@@ -102,7 +156,12 @@ export const getProducts = asyncHandler(async (req: Request, res: Response) => {
   const skip = (p - 1) * l
 
   const [products, total] = await Promise.all([
-    Product.find(query).populate("category", "name slug").sort(sortOption).skip(skip).limit(l),
+    Product.find(query)
+      .populate("category", "name slug")
+      .populate("subCategory", "name slug")
+      .sort(sortOption)
+      .skip(skip)
+      .limit(l),
     Product.countDocuments(query),
   ])
 
