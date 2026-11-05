@@ -24,6 +24,7 @@ import adminRoutes from "./routes/adminRoutes"
 import bannerRoutes from "./routes/bannerRoutes"
 import uploadRoutes from "./routes/uploadRoutes"
 import addonRoutes from "./routes/addonRoutes"
+import themeRoutes from "./routes/themeRoutes"
 
 const app: Express = express()
 app.set("trust proxy", 1)
@@ -97,6 +98,7 @@ app.use("/api/user", userRoutes)
 app.use("/api/admin", adminRoutes)
 app.use("/api/banners", bannerRoutes)
 app.use("/api/upload", uploadRoutes)
+app.use("/api/theme", themeRoutes)
 app.use("/api", addonRoutes)
 
 // ── Global Error Handler ──

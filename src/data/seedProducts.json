@@ -1,0 +1,580 @@
+{
+  "categories": [
+    {
+      "_id": "672a00000000000000000001",
+      "name": "Gift Hampers",
+      "slug": "gift-hampers",
+      "description": "Curated luxury gift hampers featuring premium presentation boxes, merchandise, and keepsakes.",
+      "image": "/hero-ferrari-hamper.jpg",
+      "showOnNavbar": true,
+      "navDisplayName": "Gift Hampers",
+      "showOnHome": true,
+      "homeOrder": 1,
+      "sortOrder": 1,
+      "isActive": true
+    },
+    {
+      "_id": "672a00000000000000000002",
+      "name": "Motorsport Apparel",
+      "slug": "apparel",
+      "description": "High-performance Scuderia polos, jackets, caps and everyday luxury racing gear.",
+      "image": "/category-apparel-polo.jpg",
+      "showOnNavbar": true,
+      "navDisplayName": "Apparel",
+      "showOnHome": true,
+      "homeOrder": 2,
+      "sortOrder": 2,
+      "isActive": true
+    },
+    {
+      "_id": "672a00000000000000000003",
+      "name": "Thermal Drinkware",
+      "slug": "drinkware",
+      "description": "Vacuum-insulated smart flasks, LED tumblers and stainless steel luxury mugs.",
+      "image": "/category-drinkware-flask.jpg",
+      "showOnNavbar": true,
+      "navDisplayName": "Drinkware",
+      "showOnHome": true,
+      "homeOrder": 3,
+      "sortOrder": 3,
+      "isActive": true
+    },
+    {
+      "_id": "672a00000000000000000004",
+      "name": "Collectible Accessories",
+      "slug": "accessories",
+      "description": "Gold plated keychains, pins, cuff-links and motorsport memorabilia.",
+      "image": "/category-accessories-keychain.jpg",
+      "showOnNavbar": true,
+      "navDisplayName": "Accessories",
+      "showOnHome": true,
+      "homeOrder": 4,
+      "sortOrder": 4,
+      "isActive": true
+    },
+    {
+      "_id": "672a00000000000000000005",
+      "name": "Executive Corporate Gifts",
+      "slug": "corporate-gifts",
+      "description": "Tailored onboarding kits, carbon fiber pen suites and VIP corporate gifting boxes.",
+      "image": "/corporate-luxury-gifting.jpg",
+      "showOnNavbar": true,
+      "navDisplayName": "Corporate Gifting",
+      "showOnHome": true,
+      "homeOrder": 5,
+      "sortOrder": 5,
+      "isActive": true
+    },
+    {
+      "_id": "672a00000000000000000006",
+      "name": "Bespoke Laser Keepsakes",
+      "slug": "personalized-gifts",
+      "description": "Precision laser-engraved plaques, custom name tumblers, and personalized heirloom gifts.",
+      "image": "/hero-legends-hamper.jpg",
+      "showOnNavbar": true,
+      "navDisplayName": "Personalised Gifts",
+      "showOnHome": true,
+      "homeOrder": 6,
+      "sortOrder": 6,
+      "isActive": true
+    }
+  ],
+  "products": [
+    {
+      "_id": "672a00010000000000000001",
+      "name": "Scuderia Ferrari Performance Polo",
+      "slug": "scuderia-ferrari-performance-polo",
+      "description": "Official Scuderia black high-performance pique polo with signature red edge tipping, precision-embroidered emblem, and breathable moisture-wicking weave.",
+      "price": 2499,
+      "comparePrice": 3999,
+      "images": [
+        "/category-apparel-polo.jpg"
+      ],
+      "category": "672a00000000000000000002",
+      "stock": 25,
+      "isFeatured": true,
+      "isBestSeller": true,
+      "isPersonalizable": false,
+      "allowCustomImageUpload": false,
+      "tags": [
+        "Ferrari",
+        "Motorsport",
+        "Polo",
+        "Apparel",
+        "F1"
+      ],
+      "ratings": {
+        "average": 4.9,
+        "count": 128
+      },
+      "isActive": true,
+      "updatedAt": "2026-11-05T19:06:10.095Z"
+    },
+    {
+      "_id": "672a00010000000000000002",
+      "name": "Leclerc #16 Scuderia Insulated Flask (500ml)",
+      "slug": "leclerc-16-scuderia-insulated-flask",
+      "description": "Double-wall vacuum-insulated stainless steel thermal flask in racing red with matte black accents, driver #16 insignia, and 24-hour temperature retention.",
+      "price": 1899,
+      "comparePrice": 2799,
+      "images": [
+        "/category-drinkware-flask.jpg"
+      ],
+      "category": "672a00000000000000000003",
+      "stock": 35,
+      "isFeatured": true,
+      "isBestSeller": false,
+      "isPersonalizable": false,
+      "allowCustomImageUpload": false,
+      "tags": [
+        "Ferrari",
+        "Leclerc",
+        "Drinkware",
+        "Flask",
+        "Motorsport"
+      ],
+      "ratings": {
+        "average": 4.8,
+        "count": 94
+      },
+      "isActive": true
+    },
+    {
+      "_id": "672a00010000000000000003",
+      "name": "24K Gold Plated Miniature F1 Race Car Keychain",
+      "slug": "24k-gold-plated-f1-race-car-keychain",
+      "description": "Heavy solid die-cast miniature F1 race car keychain in deep scarlet enamel with 24K gold-plated chassis, curb chain, and luxury velvet gift pouch.",
+      "price": 999,
+      "comparePrice": 1599,
+      "images": [
+        "/category-accessories-keychain.jpg"
+      ],
+      "category": "672a00000000000000000004",
+      "stock": 40,
+      "isFeatured": false,
+      "isBestSeller": true,
+      "isPersonalizable": false,
+      "allowCustomImageUpload": false,
+      "tags": [
+        "F1",
+        "Keychain",
+        "Gold",
+        "Collectible",
+        "Accessories"
+      ],
+      "ratings": {
+        "average": 4.9,
+        "count": 210
+      },
+      "isActive": true
+    },
+    {
+      "_id": "672a00010000000000000004",
+      "name": "Scuderia Corsa Special Edition Racing Cap",
+      "slug": "scuderia-corsa-special-edition-racing-cap",
+      "description": "Classic Rosso Corsa curved-brim racing cap featuring structured cotton twill, Italian speed stripe detail, and embossed metal clasp closure.",
+      "price": 1499,
+      "comparePrice": 2299,
+      "images": [
+        "/collection-cap.jpg"
+      ],
+      "category": "672a00000000000000000002",
+      "stock": 20,
+      "isFeatured": false,
+      "isBestSeller": false,
+      "isPersonalizable": false,
+      "allowCustomImageUpload": false,
+      "tags": [
+        "Ferrari",
+        "Cap",
+        "Headwear",
+        "Motorsport"
+      ],
+      "ratings": {
+        "average": 4.7,
+        "count": 65
+      },
+      "isActive": true
+    },
+    {
+      "_id": "672a00010000000000000005",
+      "name": "Executive Matte Black & Leather Grip Insulated Tumbler",
+      "slug": "executive-matte-black-leather-insulated-tumbler",
+      "description": "Ultra-premium matte black stainless steel insulated tumbler with genuine textured black leather grip band, polished gold metallic collar, and custom laser-engraved crest.",
+      "price": 2199,
+      "comparePrice": 3299,
+      "images": [
+        "/product-executive-tumbler.jpg"
+      ],
+      "category": "672a00000000000000000005",
+      "stock": 30,
+      "isFeatured": true,
+      "isBestSeller": true,
+      "isPersonalizable": false,
+      "allowCustomImageUpload": false,
+      "tags": [
+        "Corporate",
+        "Executive",
+        "Tumbler",
+        "Drinkware",
+        "VIP"
+      ],
+      "ratings": {
+        "average": 4.9,
+        "count": 88
+      },
+      "isActive": true
+    },
+    {
+      "_id": "672a00010000000000000006",
+      "name": "Carbon Fiber & 24K Gold Rollerball Executive Pen Set",
+      "slug": "carbon-fiber-gold-rollerball-executive-pen-set",
+      "description": "Pair of heavy executive pens (fountain and rollerball) made of genuine woven carbon fiber barrels with high-polished 24K gold clip and accents, presented in an open velvet gift box.",
+      "price": 2799,
+      "comparePrice": 4199,
+      "images": [
+        "/product-executive-pen-set.jpg"
+      ],
+      "category": "672a00000000000000000005",
+      "stock": 18,
+      "isFeatured": true,
+      "isBestSeller": false,
+      "isPersonalizable": false,
+      "allowCustomImageUpload": false,
+      "tags": [
+        "Corporate",
+        "Pen",
+        "Stationery",
+        "Executive",
+        "Luxury"
+      ],
+      "ratings": {
+        "average": 5,
+        "count": 52
+      },
+      "isActive": true
+    },
+    {
+      "_id": "672a00010000000000000007",
+      "name": "Italian Saffiano Leather Travel Wallet & Cardholder",
+      "slug": "italian-saffiano-leather-travel-wallet-cardholder",
+      "description": "Luxury black Italian Saffiano calfskin leather executive bifold wallet and matching minimalist cardholder with subtle gold foil embossed monogram and hand-stitched borders.",
+      "price": 1999,
+      "comparePrice": 2999,
+      "images": [
+        "/product-leather-wallet.jpg"
+      ],
+      "category": "672a00000000000000000005",
+      "stock": 22,
+      "isFeatured": false,
+      "isBestSeller": true,
+      "isPersonalizable": false,
+      "allowCustomImageUpload": false,
+      "tags": [
+        "Leather",
+        "Wallet",
+        "Executive",
+        "Accessories",
+        "Corporate"
+      ],
+      "ratings": {
+        "average": 4.8,
+        "count": 76
+      },
+      "isActive": true
+    },
+    {
+      "_id": "672a00010000000000000008",
+      "name": "Dark Walnut & Leather Executive Valet with Fast Wireless Charger",
+      "slug": "dark-walnut-leather-executive-valet-wireless-charger",
+      "description": "Handcrafted dark American walnut wood and premium black leather executive desk valet tray featuring an integrated 15W Qi fast wireless charger, recessed watch and pen compartments.",
+      "price": 3499,
+      "comparePrice": 5499,
+      "images": [
+        "/product-desk-valet.jpg"
+      ],
+      "category": "672a00000000000000000005",
+      "stock": 15,
+      "isFeatured": true,
+      "isBestSeller": false,
+      "isPersonalizable": false,
+      "allowCustomImageUpload": false,
+      "tags": [
+        "Desk",
+        "Organizer",
+        "Wireless Charger",
+        "Executive",
+        "Corporate"
+      ],
+      "ratings": {
+        "average": 4.9,
+        "count": 114
+      },
+      "isActive": true
+    },
+    {
+      "_id": "672a00010000000000000009",
+      "name": "Personalised CXO Signature Elite Presentation Hamper",
+      "slug": "personalised-cxo-signature-elite-presentation-hamper",
+      "description": "Ultra-luxury bespoke executive gift box containing a laser-engraved gold temperature flask, genuine leather diary, gold metal rollerball pen, and keychain in a silk-lined keepsake box.",
+      "price": 4999,
+      "comparePrice": 6999,
+      "images": [
+        "/product-cxo-elite-set.jpg"
+      ],
+      "category": "672a00000000000000000006",
+      "stock": 12,
+      "isFeatured": true,
+      "isBestSeller": false,
+      "isPersonalizable": true,
+      "personalizationPrompt": "Enter name or monogram to engrave on the flask and box",
+      "allowCustomImageUpload": false,
+      "personalizationZones": [
+        {
+          "name": "Name Engraving",
+          "x": 50,
+          "y": 55,
+          "fontSize": 16,
+          "sampleText": "VIKRAMADITYA"
+        }
+      ],
+      "tags": [
+        "Bespoke",
+        "Hamper",
+        "Personalized",
+        "Executive",
+        "Gift Box"
+      ],
+      "ratings": {
+        "average": 5,
+        "count": 43
+      },
+      "isActive": true
+    },
+    {
+      "_id": "672a00010000000000000010",
+      "name": "Laser-Engraved Smart LED Temperature Display Mug",
+      "slug": "laser-engraved-smart-led-temperature-display-mug",
+      "description": "Food-grade SUS304 stainless steel smart travel mug featuring an LCD touch temperature sensor lid and custom fiber laser-etched permanent monogram or personalized name.",
+      "price": 1299,
+      "comparePrice": 1999,
+      "images": [
+        "/product-led-temp-mug.webp"
+      ],
+      "category": "672a00000000000000000006",
+      "stock": 50,
+      "isFeatured": false,
+      "isBestSeller": true,
+      "isPersonalizable": true,
+      "personalizationPrompt": "Enter text to engrave (Name, Initials or Quote)",
+      "allowCustomImageUpload": false,
+      "personalizationZones": [
+        {
+          "name": "Engraved Name",
+          "x": 50,
+          "y": 50,
+          "fontSize": 18,
+          "sampleText": "ALEXANDER"
+        }
+      ],
+      "tags": [
+        "Smart Mug",
+        "LED",
+        "Temperature",
+        "Personalized",
+        "Laser"
+      ],
+      "ratings": {
+        "average": 4.8,
+        "count": 189
+      },
+      "isActive": true
+    },
+    {
+      "_id": "672a00010000000000000011",
+      "name": "Premium 3-in-1 Handcrafted Wooden Utility & Desk Suite",
+      "slug": "premium-3in1-handcrafted-wooden-utility-suite",
+      "description": "Natural seasoned teakwood desk organizer set including custom laser-engraved phone dock, stationery holder, and visiting card organizer with golden brass accents.",
+      "price": 2299,
+      "comparePrice": 3499,
+      "images": [
+        "/product-wooden-utility-set.webp"
+      ],
+      "category": "672a00000000000000000006",
+      "stock": 20,
+      "isFeatured": false,
+      "isBestSeller": false,
+      "isPersonalizable": true,
+      "personalizationPrompt": "Enter custom name or company logo text",
+      "allowCustomImageUpload": false,
+      "personalizationZones": [
+        {
+          "name": "Desk Plaque",
+          "x": 50,
+          "y": 60,
+          "fontSize": 14,
+          "sampleText": "DR. ARYAN SHAH"
+        }
+      ],
+      "tags": [
+        "Teakwood",
+        "Wooden",
+        "Desk",
+        "Organizer",
+        "Personalized"
+      ],
+      "ratings": {
+        "average": 4.9,
+        "count": 98
+      },
+      "isActive": true
+    },
+    {
+      "_id": "672a00010000000000000012",
+      "name": "Elite 5-in-1 Custom Engraved Luxury Executive Box Set",
+      "slug": "elite-5in1-custom-engraved-luxury-executive-box-set",
+      "description": "Comprehensive 5-piece bespoke gift suite featuring a laser-engraved matte black thermal tumbler, executive notebook with metal badge, twist pen, cardholder, and leather keychain.",
+      "price": 3899,
+      "comparePrice": 5299,
+      "images": [
+        "/product-elite-5in1-hamper.webp"
+      ],
+      "category": "672a00000000000000000006",
+      "stock": 16,
+      "isFeatured": true,
+      "isBestSeller": false,
+      "isPersonalizable": true,
+      "personalizationPrompt": "Enter recipient name for laser customization across all 5 items",
+      "allowCustomImageUpload": false,
+      "personalizationZones": [
+        {
+          "name": "Master Engraving",
+          "x": 50,
+          "y": 50,
+          "fontSize": 16,
+          "sampleText": "RAJESH MALHOTRA"
+        }
+      ],
+      "tags": [
+        "5-in-1",
+        "Executive Set",
+        "Custom Engraved",
+        "Bespoke",
+        "Hamper"
+      ],
+      "ratings": {
+        "average": 4.9,
+        "count": 142
+      },
+      "isActive": true
+    }
+  ],
+  "banners": [
+    {
+      "_id": "banner-hero-1",
+      "title": "The Official Ferrari Gifting Collection",
+      "subtitle": "Curated hampers, merchandise and collectibles",
+      "tag": "Scuderia Collection",
+      "imageUrl": "/hero-ferrari-hamper.jpg",
+      "videoUrl": "",
+      "mediaType": "image",
+      "size": "full",
+      "position": "hero",
+      "link": "/products?category=gift-hampers",
+      "buttonText": "Shop Gift Hampers",
+      "order": 1,
+      "isActive": true
+    },
+    {
+      "_id": "banner-hero-2",
+      "title": "BMW M Motorsport Edition",
+      "subtitle": "Performance engineered luxury hampers & executive merchandise",
+      "tag": "M Performance",
+      "imageUrl": "/hero-bmw-hamper.jpg",
+      "videoUrl": "",
+      "mediaType": "image",
+      "size": "full",
+      "position": "hero",
+      "link": "/products?category=corporate-gifts",
+      "buttonText": "Discover M Collection",
+      "order": 2,
+      "isActive": true
+    },
+    {
+      "_id": "banner-hero-3",
+      "title": "Legends Edition Hamper",
+      "subtitle": "Golden football memorabilia and championship keepsakes",
+      "tag": "Haute Gifting",
+      "imageUrl": "/hero-legends-hamper.jpg",
+      "videoUrl": "",
+      "mediaType": "image",
+      "size": "full",
+      "position": "hero",
+      "link": "/products?category=personalized-gifts",
+      "buttonText": "Explore Legends",
+      "order": 3,
+      "isActive": true
+    },
+    {
+      "_id": "banner-middle",
+      "title": "Corporate Gifting That Drives Relationships",
+      "subtitle": "Premium Ferrari gift hampers for clients, teams and business partners.",
+      "tag": "Corporate Luxury",
+      "imageUrl": "/corporate-luxury-gifting.jpg",
+      "videoUrl": "",
+      "mediaType": "image",
+      "size": "auto",
+      "position": "middle",
+      "link": "/products?category=corporate-gifts",
+      "buttonText": "Get a Custom Quote",
+      "order": 4,
+      "isActive": true
+    },
+    {
+      "_id": "banner-bottom",
+      "title": "Bespoke Keepsakes & Legends Edition",
+      "subtitle": "Custom laser-engraved golden trophies and personalized memorabilia.",
+      "tag": "Bespoke Keepsakes",
+      "imageUrl": "/hero-legends-hamper.jpg",
+      "videoUrl": "",
+      "mediaType": "image",
+      "size": "auto",
+      "position": "bottom",
+      "link": "/products?category=personalized-gifts",
+      "buttonText": "Personalize Keepsake",
+      "order": 5,
+      "isActive": true
+    }
+  ],
+  "themeSettings": {
+    "colors": {
+      "primary": "#DC2626",
+      "background": "#0A0204",
+      "surface": "#140507",
+      "textPrimary": "#FFFFFF",
+      "textMuted": "#A1A1AA",
+      "borderColor": "rgba(255, 255, 255, 0.08)",
+      "goldAccent": "#F59E0B"
+    },
+    "banners": {
+      "showHeadings": false,
+      "fontFamily": "Playfair Display",
+      "headingSize": "large",
+      "alignment": "center",
+      "position": "center",
+      "textColor": "#FFFFFF",
+      "showSubtitle": true,
+      "showButton": true
+    },
+    "products": {
+      "aspectRatio": "4:5",
+      "gridColumns": 4,
+      "photoMode": "multi",
+      "hoverBehavior": "video",
+      "cardRadius": "rounded-xl",
+      "showPrice": true,
+      "showRating": true
+    },
+    "updatedAt": "2026-11-05T19:43:11.366Z"
+  }
+}

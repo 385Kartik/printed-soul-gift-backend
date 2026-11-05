@@ -14,6 +14,8 @@ import {
   adminCreateBanner,
   adminUpdateBanner,
   adminDeleteBanner,
+  adminGetThemeSettings,
+  adminUpdateThemeSettings,
 } from "../controllers/adminController"
 import { protect, authorize } from "../middlewares/authMiddleware"
 
@@ -44,5 +46,9 @@ router.get("/banners", adminGetBanners)
 router.post("/banners", adminCreateBanner)
 router.put("/banners/:id", adminUpdateBanner)
 router.delete("/banners/:id", adminDeleteBanner)
+
+// Theme & Customizer
+router.get("/theme", adminGetThemeSettings)
+router.put("/theme", adminUpdateThemeSettings)
 
 export default router

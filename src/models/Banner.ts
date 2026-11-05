@@ -5,9 +5,13 @@ export interface IBanner extends Document {
   subtitle?: string
   tag?: string
   imageUrl: string
+  videoUrl?: string
+  mediaType: "image" | "video"
+  size: "auto" | "full" | "medium" | "slim"
+  position: "hero" | "middle" | "bottom"
   link?: string
   buttonText?: string
-  type: "hero" | "promo" | "strip"
+  type: string
   order: number
   isActive: boolean
 }
@@ -18,9 +22,13 @@ const BannerSchema = new Schema<IBanner>(
     subtitle: { type: String },
     tag: { type: String },
     imageUrl: { type: String, required: true },
+    videoUrl: { type: String },
+    mediaType: { type: String, enum: ["image", "video"], default: "image" },
+    size: { type: String, enum: ["auto", "full", "medium", "slim"], default: "auto" },
+    position: { type: String, enum: ["hero", "middle", "bottom"], default: "hero" },
     link: { type: String, default: "/products" },
     buttonText: { type: String, default: "Shop Now" },
-    type: { type: String, enum: ["hero", "promo", "strip"], default: "hero" },
+    type: { type: String, default: "hero" },
     order: { type: Number, default: 0 },
     isActive: { type: Boolean, default: true },
   },
