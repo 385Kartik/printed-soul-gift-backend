@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose"
 
-export interface IBanner extends Document {
+export interface IBanner {
+  _id?: string
   title: string
   subtitle?: string
   tag?: string
@@ -18,6 +19,7 @@ export interface IBanner extends Document {
 
 const BannerSchema = new Schema<IBanner>(
   {
+    _id: { type: String, default: () => new mongoose.Types.ObjectId().toString() },
     title: { type: String, required: true },
     subtitle: { type: String },
     tag: { type: String },

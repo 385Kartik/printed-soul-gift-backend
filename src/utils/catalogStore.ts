@@ -1,7 +1,20 @@
 import fs from "fs"
 import path from "path"
 
-const SEED_FILE_PATH = path.resolve(__dirname, "../data/seedProducts.json")
+function getSeedFilePath(): string {
+  const candidates = [
+    path.resolve(__dirname, "../data/seedProducts.json"),
+    path.resolve(__dirname, "../../src/data/seedProducts.json"),
+    path.resolve(process.cwd(), "src/data/seedProducts.json"),
+    path.resolve(process.cwd(), "dist/data/seedProducts.json"),
+    path.resolve(process.cwd(), "backend/src/data/seedProducts.json"),
+    path.resolve(process.cwd(), "backend/dist/data/seedProducts.json"),
+  ]
+  for (const c of candidates) {
+    if (fs.existsSync(c)) return c
+  }
+  return path.resolve(__dirname, "../data/seedProducts.json")
+}
 
 interface SeedData {
   categories: any[]
@@ -11,9 +24,10 @@ interface SeedData {
 }
 
 function readData(): SeedData {
+  const filePath = getSeedFilePath()
   try {
-    if (fs.existsSync(SEED_FILE_PATH)) {
-      const raw = fs.readFileSync(SEED_FILE_PATH, "utf-8")
+    if (fs.existsSync(filePath)) {
+      const raw = fs.readFileSync(filePath, "utf-8")
       const parsed = JSON.parse(raw)
       return {
         categories: parsed.categories || [],
@@ -23,16 +37,21 @@ function readData(): SeedData {
       }
     }
   } catch (err) {
-    console.error("Failed to read seedProducts.json", err)
+    console.error("Failed to read seedProducts.json from", filePath, err)
   }
   return { categories: [], products: [], banners: [], themeSettings: null }
 }
 
 function writeData(data: SeedData) {
+  const filePath = getSeedFilePath()
   try {
-    fs.writeFileSync(SEED_FILE_PATH, JSON.stringify(data, null, 2), "utf-8")
+    const dir = path.dirname(filePath)
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true })
+    }
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf-8")
   } catch (err) {
-    console.error("Failed to write seedProducts.json", err)
+    console.error("Failed to write seedProducts.json to", filePath, err)
   }
 }
 

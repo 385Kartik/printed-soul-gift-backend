@@ -16,7 +16,20 @@ router.get(
         if (banners && banners.length > 0) {
           return res.json(ApiResponse.success(banners, "Banners retrieved"))
         }
-      } catch (e) {}
+
+        const seedBanners = catalogStore.getBanners()
+        if (seedBanners && seedBanners.length > 0) {
+          try {
+            await Banner.insertMany(seedBanners)
+            const seeded = await Banner.find({ isActive: true }).sort("order")
+            return res.json(ApiResponse.success(seeded, "Banners retrieved"))
+          } catch (seedErr: any) {
+            console.error("Auto-seed banners in storefront failed:", seedErr.message)
+          }
+        }
+      } catch (e: any) {
+        console.error("Storefront bannerRoutes error:", e.message)
+      }
     }
 
     const fallbackBanners = catalogStore

@@ -344,10 +344,23 @@ export const adminGetBanners = asyncHandler(async (req: Request, res: Response) 
   if (isDbConnected()) {
     try {
       const banners = await Banner.find().sort("order")
-      if (banners.length > 0) {
+      if (banners && banners.length > 0) {
         return res.json(ApiResponse.success(banners, "Banners retrieved"))
       }
-    } catch (e) {}
+
+      // If DB is connected but has 0 banners, auto-seed from catalogStore so admin always has them
+      const seedBanners = catalogStore.getBanners()
+      if (seedBanners && seedBanners.length > 0) {
+        try {
+          const inserted = await Banner.insertMany(seedBanners)
+          return res.json(ApiResponse.success(inserted, "Banners seeded and retrieved"))
+        } catch (seedErr: any) {
+          console.error("Auto-seed banners in MongoDB failed:", seedErr.message)
+        }
+      }
+    } catch (e: any) {
+      console.error("adminGetBanners error:", e.message)
+    }
   }
 
   const banners = catalogStore.getBanners()
@@ -379,8 +392,9 @@ export const adminCreateBanner = asyncHandler(async (req: Request, res: Response
     return next(new ApiError(400, "Image URL or upload is required"))
   }
 
+  const bannerId = req.body._id || new mongoose.Types.ObjectId().toString()
   const banner = {
-    _id: `banner_${Date.now()}`,
+    _id: bannerId,
     title,
     subtitle: subtitle || "",
     tag: tag || "",
@@ -396,16 +410,19 @@ export const adminCreateBanner = asyncHandler(async (req: Request, res: Response
     isActive: isActive !== false,
   }
 
+  let createdBanner: any = null
   if (isDbConnected()) {
     try {
-      const created = await Banner.create(banner)
-      catalogStore.createBanner(created.toObject ? created.toObject() : created)
-      return res.status(201).json(ApiResponse.success(created, "Banner created successfully"))
-    } catch (e) {}
+      createdBanner = await Banner.create(banner)
+      catalogStore.createBanner(createdBanner.toObject ? createdBanner.toObject() : createdBanner)
+      return res.status(201).json(ApiResponse.success(createdBanner, "Banner created successfully"))
+    } catch (e: any) {
+      console.error("Banner.create error in MongoDB:", e.message)
+    }
   }
 
   const saved = catalogStore.createBanner(banner)
-  res.status(201).json(ApiResponse.success(saved, "Banner created successfully"))
+  res.status(201).json(ApiResponse.success(createdBanner || saved || banner, "Banner created successfully"))
 })
 
 export const adminUpdateBanner = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -414,8 +431,15 @@ export const adminUpdateBanner = asyncHandler(async (req: Request, res: Response
 
   if (isDbConnected()) {
     try {
-      updatedBanner = await Banner.findByIdAndUpdate(id, req.body, { new: true })
-    } catch (e) {}
+      if (mongoose.Types.ObjectId.isValid(id)) {
+        updatedBanner = await Banner.findByIdAndUpdate(id, req.body, { new: true })
+      }
+      if (!updatedBanner) {
+        updatedBanner = await Banner.findOneAndUpdate({ _id: id }, req.body, { new: true })
+      }
+    } catch (e: any) {
+      console.error("Banner update error in MongoDB:", e.message)
+    }
   }
 
   const saved = catalogStore.updateBanner(id, req.body)
@@ -427,8 +451,13 @@ export const adminDeleteBanner = asyncHandler(async (req: Request, res: Response
 
   if (isDbConnected()) {
     try {
-      await Banner.findByIdAndDelete(id)
-    } catch (e) {}
+      if (mongoose.Types.ObjectId.isValid(id)) {
+        await Banner.findByIdAndDelete(id)
+      }
+      await Banner.findOneAndDelete({ _id: id })
+    } catch (e: any) {
+      console.error("Banner delete error in MongoDB:", e.message)
+    }
   }
 
   catalogStore.deleteBanner(id)

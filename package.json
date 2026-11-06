@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/index.js",
     "dev": "nodemon src/index.ts",
-    "build": "tsc",
+    "build": "tsc && node -e \"const fs=require('fs'); const path=require('path'); const src='src/data/seedProducts.json'; const dst='dist/data/seedProducts.json'; if(fs.existsSync(src)){ fs.mkdirSync(path.dirname(dst), {recursive:true}); fs.copyFileSync(src, dst); }\"",
     "seed": "ts-node src/scripts/seed.ts"
   },
   "dependencies": {
